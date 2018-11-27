@@ -81,6 +81,18 @@
 			"revisionTime": "2018-09-06T18:38:39Z"
 		},
 		{
+			"checksumSHA1": "/Bz7y0k5M2dd0FwrQdUdgHO5i1I=",
+			"path": "github.com/juju/clock",
+			"revision": "bab88fc672997ef02d03f85310182d97a93dee21",
+			"revisionTime": "2018-08-08T02:13:10Z"
+		},
+		{
+			"checksumSHA1": "2NGTm4s62DnjF4sYty0OETiuqRM=",
+			"path": "github.com/juju/mgosession",
+			"revision": "8729e3fb5999907c6ca9da5c1828ec113c0db173",
+			"revisionTime": "2018-10-23T09:24:13Z"
+		},
+		{
 			"checksumSHA1": "svBVhulHz6xoRijONkyn6KBmTsU=",
 			"path": "github.com/labstack/echo",
 			"revision": "2e9f4ea4e010fa328318107ba074b1b72381c571",
@@ -191,6 +203,12 @@
 			"revisionTime": "2018-11-27T08:28:20Z"
 		},
 		{
+			"checksumSHA1": "GtamqiJoL7PGHsN454AoffBFMa8=",
+			"path": "golang.org/x/net/context",
+			"revision": "adae6a3d119ae4890b46832a2e88a95adc62b8e7",
+			"revisionTime": "2018-11-14T21:44:15Z"
+		},
+		{
 			"checksumSHA1": "QmmEQv1jLvjlVGPsWewqeNYNoyk=",
 			"path": "golang.org/x/sys/unix",
 			"revision": "62eef0e2fa9b2c385f7b2778e763486da6880d37",
@@ -207,6 +225,42 @@
 			"path": "golang.org/x/text/unicode/norm",
 			"revision": "6f44c5a2ea40ee3593d98cdcc905cc1fdaa660e2",
 			"revisionTime": "2018-10-29T18:00:05Z"
+		},
+		{
+			"checksumSHA1": "bS5Kp6YjeXz4nvvS55CqIBP+HzM=",
+			"path": "gopkg.in/mgo.v2",
+			"revision": "9856a29383ce1c59f308dd1cf0363a79b5bef6b5",
+			"revisionTime": "2018-07-05T11:36:04Z"
+		},
+		{
+			"checksumSHA1": "/xRHTpN8WOK4nmZjJ1f96ER1b/o=",
+			"path": "gopkg.in/mgo.v2/bson",
+			"revision": "9856a29383ce1c59f308dd1cf0363a79b5bef6b5",
+			"revisionTime": "2018-07-05T11:36:04Z"
+		},
+		{
+			"checksumSHA1": "XQsrqoNT1U0KzLxOFcAZVvqhLfk=",
+			"path": "gopkg.in/mgo.v2/internal/json",
+			"revision": "9856a29383ce1c59f308dd1cf0363a79b5bef6b5",
+			"revisionTime": "2018-07-05T11:36:04Z"
+		},
+		{
+			"checksumSHA1": "LEvMCnprte47qdAxWvQ/zRxVF1U=",
+			"path": "gopkg.in/mgo.v2/internal/sasl",
+			"revision": "9856a29383ce1c59f308dd1cf0363a79b5bef6b5",
+			"revisionTime": "2018-07-05T11:36:04Z"
+		},
+		{
+			"checksumSHA1": "+1WDRPaOphSCmRMxVPIPBV4aubc=",
+			"path": "gopkg.in/mgo.v2/internal/scram",
+			"revision": "9856a29383ce1c59f308dd1cf0363a79b5bef6b5",
+			"revisionTime": "2018-07-05T11:36:04Z"
+		},
+		{
+			"checksumSHA1": "t95/FNK2nGCx3e6IARbO7OrcCuY=",
+			"path": "gopkg.in/tomb.v2",
+			"revision": "d5d1b5820637886def9eef33e03a27a9f166942c",
+			"revisionTime": "2016-12-08T15:16:19Z"
 		},
 		{
 			"checksumSHA1": "ZSWoOPUNRr5+3dhkLK3C4cZAQPk=",
