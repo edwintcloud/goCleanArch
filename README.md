@@ -3,7 +3,7 @@ An API in Go following Clean Architecture principles as outlined [here](https://
 
 ## Structure
 ### entities
-Also know as models, here lives our data structures and functions that define how data is stored in our database(s).
+Also known as models, here lives our data structures and functions that define how data is stored in our database(s).
 ### repositories
 Here is where our database handlers go. Each database handler should be defined seperately with it's own interface functions. This layer acts for CRUD operations to specified repository. Repositories are not limited to databases, any data inputs can be included such as pulling data from microservices and sanitizing the data. No business logic here, that will be handled in usecases layer.
 ### usecases
