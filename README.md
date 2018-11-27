@@ -10,3 +10,8 @@ Here is where our database handlers go. Each database handler should be defined 
 Here is where we process our business logic. This layer will decide which repository to use and handle sanitized data flowing from the controllers/delivery layer to the specified repository and vice-versa. This layer can also be called services.
 ### controllers
 Also know as the delivery layer, this layer will act as the presenter. In the case of an API, then means sending back JSON data and receiving JSON, sanitizing that JSON and sending to the proper usecase/service. 
+
+## Setup
+1. Clone this repo in your $GOPATH
+2. Use `govendor sync` to fetch project dependencies
+3. To run server use `go run server.go`
