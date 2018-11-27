@@ -17,7 +17,8 @@
 *.out
 
 ### Go Patch ###
-/vendor/
+vendor/*
+!vendor/vendor.json
 /Godeps/
 
 ### macOS ###
