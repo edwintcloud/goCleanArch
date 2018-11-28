@@ -1,5 +1,12 @@
 {
   "server": {
     "address": ":5000"
+  },
+  "database": {
+    "type": "mongo",
+    "uri": "localhost",
+    "name": "myApi",
+    "username": "",
+    "password": ""
   }
 }

@@ -1,15 +1,14 @@
 package repositories
 
 import (
-	"reflect"
-
-	"github.com/juju/mgosession"
+	"github.com/globalsign/mgo"
+	"github.com/globalsign/mgo/bson"
 	"github.com/spf13/viper"
 )
 
 // Repository interface definition
 type Repository interface {
-	FindByID(id interface{}) (*interface{}, error)
+	FindByID(id interface{}) (interface{}, error)
 	// FindAll() ([]*interface{}, error)
 	// Create(user *interface{}) (*interface{}, error)
 	// UpdateByID(id interface{}, updates map[string]interface{}) (*interface{}, error)
@@ -18,40 +17,34 @@ type Repository interface {
 
 // mongoRepository struct representing database connection for internal use
 type mongoRepository struct {
-	pool  *mgosession.Pool
-	model interface{}
+	db         *mgo.Session
+	collection string
 }
 
 // NewMongoRepository sets mongoRepository pool connection m is the model
-func NewMongoRepository(p *mgosession.Pool, m interface{}) Repository {
+func NewMongoRepository(d *mgo.Session, c string) Repository {
 	return &mongoRepository{
-		pool:  p,
-		model: m,
+		db:         d,
+		collection: c,
 	}
 }
 
-func (r *mongoRepository) FindByID(id interface{}) (*interface{}, error) {
+func (r *mongoRepository) FindByID(id interface{}) (interface{}, error) {
 	var result interface{}
-
-	// get interface type name and use as collection name, db name will come from viper config
-	session := r.pool.Session(nil)
-
-	// get collection name
-	collection := getType(r.model)
 
 	// get database name
 	db := viper.GetString("database.name")
 
 	// create collection instance
-	c := session.DB(db).C(collection)
+	c := r.db.DB(db).C(r.collection)
 
 	// find by id or return nil and err
-	if err := c.FindId(id).One(&result); err != nil {
+	if err := c.FindId(bson.ObjectIdHex(id.(string))).One(&result); err != nil {
 		return nil, err
 	}
 
 	// otherwise return result and no error
-	return &result, nil
+	return result, nil
 }
 
 // func (r *mongoRepository) FindAll() ([]*interface{}, error) {
@@ -69,12 +62,3 @@ func (r *mongoRepository) FindByID(id interface{}) (*interface{}, error) {
 // func (r *mongoRepository) DeleteByID(id interface{}) error {
 
 // }
-
-// returns string representation of interface{} type
-func getType(v interface{}) string {
-	if t := reflect.TypeOf(v); t.Kind() == reflect.Ptr {
-		return "*" + t.Elem().Name()
-	} else {
-		return t.Name()
-	}
-}
