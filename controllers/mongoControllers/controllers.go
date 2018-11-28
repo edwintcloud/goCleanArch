@@ -1,4 +1,4 @@
-package mongoControllers
+package controllers
 
 import (
 	"goCleanArch/models"
