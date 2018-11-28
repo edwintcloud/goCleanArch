@@ -9,19 +9,18 @@ import (
 	"github.com/labstack/echo"
 )
 
-// ResponseError represent the response error struct
+// ResponseError is used to display errors in json format
 type ResponseError struct {
 	Error string `json:"error"`
 }
 
-// Handler represent the httphandler for article
-type Handler struct {
+type handler struct {
 	Usecase *usecases.Usecase
 }
 
 // InitUsers initializes user controller and routes
 func InitUsers(e *echo.Echo, u *usecases.Usecase) {
-	handler := &Handler{
+	handler := &handler{
 		Usecase: u,
 	}
 
@@ -31,7 +30,7 @@ func InitUsers(e *echo.Echo, u *usecases.Usecase) {
 	}
 }
 
-func (h *Handler) getUserByID(c echo.Context) error {
+func (h *handler) getUserByID(c echo.Context) error {
 	id := c.Param("id")
 	result := models.User{}
 
