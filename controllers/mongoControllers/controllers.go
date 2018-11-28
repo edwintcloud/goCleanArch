@@ -9,8 +9,7 @@ import (
 	"github.com/labstack/echo"
 )
 
-// ResponseError is used to display errors in json format
-type ResponseError struct {
+type responseError struct {
 	Error string `json:"error"`
 }
 
@@ -36,18 +35,18 @@ func (h *handler) getUserByID(c echo.Context) error {
 
 	// make sure id is not empty
 	if len(id) == 0 {
-		return c.JSON(http.StatusBadRequest, ResponseError{Error: "No Id param specified"})
+		return c.JSON(http.StatusBadRequest, responseError{Error: "No Id param specified"})
 	}
 
 	// make sure id is valid object id
 	if !bson.IsObjectIdHex(id) {
-		return c.JSON(http.StatusBadRequest, ResponseError{Error: "invalid objectid"})
+		return c.JSON(http.StatusBadRequest, responseError{Error: "invalid objectid"})
 	}
 
 	// find by id
 	foundResult, err := h.Usecase.FindByID(id)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, ResponseError{Error: err.Error()})
+		return c.JSON(http.StatusBadRequest, responseError{Error: err.Error()})
 	}
 
 	// convert to struct and return result
