@@ -12,3 +12,8 @@ type User struct {
 	UpdatedAt time.Time   `json:"updated_at" bson:"updated_at"`
 	CreatedAt time.Time   `json:"created_at" bson:"created_at"`
 }
+
+// ResponseError model
+type ResponseError struct {
+	Error string `json:"error"`
+}

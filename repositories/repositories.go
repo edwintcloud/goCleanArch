@@ -10,36 +10,31 @@ import (
 type Repository interface {
 	FindByID(id interface{}) (interface{}, error)
 	// FindAll() ([]*interface{}, error)
-	// Create(user *interface{}) (*interface{}, error)
+	Create(id interface{}, data interface{}) (interface{}, error)
 	// UpdateByID(id interface{}, updates map[string]interface{}) (*interface{}, error)
 	// DeleteByID(id interface{}) error
 }
 
 // mongoRepository struct representing database connection for internal use
 type mongoRepository struct {
-	db         *mgo.Session
-	collection string
+	c *mgo.Collection
 }
 
 // NewMongoRepository sets mongoRepository pool connection m is the model
 func NewMongoRepository(d *mgo.Session, c string) Repository {
+	// get database name from config
+	db := viper.GetString("database.name")
+
 	return &mongoRepository{
-		db:         d,
-		collection: c,
+		c: d.DB(db).C(c),
 	}
 }
 
 func (r *mongoRepository) FindByID(id interface{}) (interface{}, error) {
 	var result interface{}
 
-	// get database name
-	db := viper.GetString("database.name")
-
-	// create collection instance
-	c := r.db.DB(db).C(r.collection)
-
 	// find by id or return nil and err
-	if err := c.FindId(bson.ObjectIdHex(id.(string))).One(&result); err != nil {
+	if err := r.c.FindId(bson.ObjectIdHex(id.(string))).One(&result); err != nil {
 		return nil, err
 	}
 
@@ -51,9 +46,23 @@ func (r *mongoRepository) FindByID(id interface{}) (interface{}, error) {
 
 // }
 
-// func (r *mongoRepository) Create(user *interface{}) (*interface{}, error) {
+func (r *mongoRepository) Create(id interface{}, data interface{}) (interface{}, error) {
+	var result interface{}
 
-// }
+	// create new document
+	if err := r.c.Insert(data); err != nil {
+		return nil, err
+	}
+
+	// find new document by id
+	if err := r.c.FindId(id.(bson.ObjectId)).One(&result); err != nil {
+		return nil, err
+	}
+
+	// return new document
+	return result, nil
+
+}
 
 // func (r *mongoRepository) UpdateByID(id interface{}, updates map[string]interface{}) (*interface{}, error) {
 

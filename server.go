@@ -1,9 +1,13 @@
 package main
 
 import (
+	"fmt"
 	mongo_controllers "goCleanArch/controllers/mongoControllers"
+	"goCleanArch/models"
 	"goCleanArch/repositories"
 	"goCleanArch/usecases"
+
+	"net/http"
 
 	"github.com/globalsign/mgo"
 	"github.com/labstack/echo"
@@ -31,6 +35,12 @@ func main() {
 	default:
 		panic("No database type specified or specified type not implemented!")
 	}
+
+	// catch all route
+	e.Any("*", func(c echo.Context) error {
+		err := fmt.Sprintf("Bad Request - %s %s", c.Request().Method, c.Request().RequestURI)
+		return c.JSON(http.StatusBadRequest, models.ResponseError{Error: err})
+	})
 
 	// start echo server, panic on failure
 	if err := e.Start(viper.GetString("server.address")); err != nil {
