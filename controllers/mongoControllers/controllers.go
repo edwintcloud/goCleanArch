@@ -22,6 +22,7 @@ func InitUsers(e *echo.Echo, u *usecases.Usecase) {
 
 	routes := e.Group("/api/v1/users")
 	{
+		routes.GET("", handler.getAllUsers)
 		routes.GET("/:id", handler.getUserByID)
 		routes.POST("", handler.createUser)
 	}
@@ -49,6 +50,19 @@ func (h *handler) getUserByID(c echo.Context) error {
 	// convert usecaseResult to user struct and return result
 	bsonBytes, _ := bson.Marshal(usecaseResult)
 	bson.Unmarshal(bsonBytes, &result)
+	return c.JSON(http.StatusOK, result)
+
+}
+
+func (h *handler) getAllUsers(c echo.Context) error {
+
+	// find all
+	result, err := h.Usecase.FindAll()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, models.ResponseError{Error: err.Error()})
+	}
+
+	// return result
 	return c.JSON(http.StatusOK, result)
 
 }

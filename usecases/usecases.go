@@ -17,8 +17,13 @@ func NewUsecase(r repositories.Repository) *Usecase {
 }
 
 // FindByID finds a resource by id
-func (u *Usecase) FindByID(id string) (interface{}, error) {
+func (u *Usecase) FindByID(id interface{}) (interface{}, error) {
 	return u.repo.FindByID(id)
+}
+
+// FindAll finds all resources for usecase
+func (u *Usecase) FindAll() ([]interface{}, error) {
+	return u.repo.FindAll()
 }
 
 // Create creates a new resource with specified data and returns new resource
