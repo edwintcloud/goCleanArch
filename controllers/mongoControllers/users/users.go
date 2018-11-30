@@ -178,7 +178,7 @@ func (h *handler) deleteUserByID(c echo.Context) error {
 }
 
 func (h *handler) loginUser(c echo.Context) error {
-	user := make(map[string]interface{})
+	user := bson.M{}
 
 	// bind req body to bson map
 	if err := c.Bind(&user); err != nil {
