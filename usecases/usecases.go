@@ -39,6 +39,18 @@ func (u *Usecase) Create(id interface{}, data interface{}) (interface{}, error) 
 
 }
 
+// UpdateByID updates a resource by id
+func (u *Usecase) UpdateByID(id interface{}, updates interface{}) error {
+
+	// Update resource by id
+	if err := u.repo.UpdateByID(id, updates); err != nil {
+		return err
+	}
+
+	// return nil if no error
+	return nil
+}
+
 // DeleteByID deletes a resource by id
 func (u *Usecase) DeleteByID(id interface{}) error {
 	return u.repo.DeleteByID(id)

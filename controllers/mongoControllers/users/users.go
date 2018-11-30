@@ -28,6 +28,7 @@ func Init(e *echo.Echo, u *usecases.Usecase) {
 		routes.GET("", handler.getAllUsers)
 		routes.GET("/:id", handler.getUserByID)
 		routes.POST("", handler.createUser)
+		routes.PUT("/:id", handler.updateUserByID)
 		routes.DELETE("/:id", handler.deleteUserByID)
 	}
 }
@@ -95,6 +96,58 @@ func (h *handler) createUser(c echo.Context) error {
 
 	// return result
 	return c.JSON(http.StatusOK, result)
+
+}
+
+func (h *handler) updateUserByID(c echo.Context) error {
+	id := c.Param("id")
+	updates := bson.M{}
+
+	// make sure id is not empty
+	if len(id) == 0 {
+		return c.JSON(http.StatusBadRequest, models.ResponseError{Error: "No Id param specified"})
+	}
+
+	// make sure id is valid object id
+	if !bson.IsObjectIdHex(id) {
+		return c.JSON(http.StatusBadRequest, models.ResponseError{Error: "invalid objectid"})
+	}
+
+	// find by id
+	result, err := h.Usecase.FindByID(id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, models.ResponseError{Error: err.Error()})
+	}
+
+	// Bind req body to bson map
+	if err := c.Bind(&updates); err != nil {
+		return c.JSON(http.StatusBadRequest, models.ResponseError{Error: err.Error()})
+	}
+
+	// convert result to bson map
+	resultBson := result.(bson.M)
+
+	// make changes to resultBson based on req body
+	for k := range updates {
+		if k == "password" {
+			// hash new password
+			hash, _ := bcrypt.GenerateFromPassword([]byte(updates[k].(string)), bcrypt.DefaultCost)
+			resultBson[k] = string(hash)
+		} else if k == "updated_at" {
+			resultBson[k] = time.Now()
+		} else {
+			resultBson[k] = updates[k]
+		}
+	}
+
+	// update by id
+	err = h.Usecase.UpdateByID(id, resultBson)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, models.ResponseError{Error: err.Error()})
+	}
+
+	// return updated user
+	return c.JSON(http.StatusOK, resultBson)
 
 }
 

@@ -11,7 +11,7 @@ type Repository interface {
 	FindByID(id interface{}) (interface{}, error)
 	FindAll() ([]interface{}, error)
 	Insert(data interface{}) error
-	// UpdateByID(id interface{}, updates map[string]interface{}) (*interface{}, error)
+	UpdateByID(id interface{}, updates interface{}) error
 	DeleteByID(id interface{}) error
 }
 
@@ -66,9 +66,17 @@ func (r *mongoRepository) Insert(data interface{}) error {
 
 }
 
-// func (r *mongoRepository) UpdateByID(id interface{}, updates map[string]interface{}) (*interface{}, error) {
+func (r *mongoRepository) UpdateByID(id interface{}, updates interface{}) error {
 
-// }
+	// update document by id or return err
+	if err := r.c.UpdateId(bson.ObjectIdHex(id.(string)), updates.(bson.M)); err != nil {
+		return err
+	}
+
+	// otherwise return no error
+	return nil
+
+}
 
 func (r *mongoRepository) DeleteByID(id interface{}) error {
 
@@ -79,4 +87,5 @@ func (r *mongoRepository) DeleteByID(id interface{}) error {
 
 	// otherwise return no error
 	return nil
+
 }
