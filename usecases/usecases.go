@@ -1,7 +1,10 @@
 package usecases
 
 import (
+	"errors"
 	"goCleanArch/repositories"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Usecase struct
@@ -54,4 +57,26 @@ func (u *Usecase) UpdateByID(id interface{}, updates interface{}) error {
 // DeleteByID deletes a resource by id
 func (u *Usecase) DeleteByID(id interface{}) error {
 	return u.repo.DeleteByID(id)
+}
+
+// Login find a user by query and compares given password with repo password
+func (u *Usecase) Login(query interface{}, password interface{}) error {
+
+	// find user by email
+	result, err := u.repo.FindByQuery(query)
+	if err != nil {
+		return err
+	}
+
+	// if len result == 0, return user not found
+	if len(result) == 0 {
+		return errors.New("user not found")
+	}
+
+	// compare passwords and return result
+	if err := bcrypt.CompareHashAndPassword([]byte(result[0]["password"].(string)), []byte(password.(string))); err != nil {
+		return errors.New("invalid password")
+	}
+	return nil
+
 }

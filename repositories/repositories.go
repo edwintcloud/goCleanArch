@@ -9,6 +9,7 @@ import (
 // Repository interface definition
 type Repository interface {
 	FindByID(id interface{}) (interface{}, error)
+	FindByQuery(query interface{}) ([]map[string]interface{}, error)
 	FindAll() ([]interface{}, error)
 	Insert(data interface{}) error
 	UpdateByID(id interface{}, updates interface{}) error
@@ -42,11 +43,23 @@ func (r *mongoRepository) FindByID(id interface{}) (interface{}, error) {
 	return result, nil
 }
 
+func (r *mongoRepository) FindByQuery(query interface{}) ([]map[string]interface{}, error) {
+	var result []map[string]interface{}
+
+	// find by query or return nil and err
+	if err := r.c.Find(query).All(&result); err != nil {
+		return nil, err
+	}
+
+	// otherwise return result and no error
+	return result, nil
+}
+
 func (r *mongoRepository) FindAll() ([]interface{}, error) {
 	var result []interface{}
 
 	// find all or return nil and err
-	if err := r.c.Find(bson.M{}).All(&result); err != nil {
+	if err := r.c.Find(nil).All(&result); err != nil {
 		return nil, err
 	}
 

@@ -28,6 +28,7 @@ func Init(e *echo.Echo, u *usecases.Usecase) {
 		routes.GET("", handler.getAllUsers)
 		routes.GET("/:id", handler.getUserByID)
 		routes.POST("", handler.createUser)
+		routes.POST("/login", handler.loginUser)
 		routes.PUT("/:id", handler.updateUserByID)
 		routes.DELETE("/:id", handler.deleteUserByID)
 	}
@@ -172,6 +173,35 @@ func (h *handler) deleteUserByID(c echo.Context) error {
 
 	// return result
 	result := models.ResponseMsg{Message: fmt.Sprintf("User %s deleted successfully", id)}
+	return c.JSON(http.StatusOK, result)
+
+}
+
+func (h *handler) loginUser(c echo.Context) error {
+	user := make(map[string]interface{})
+
+	// bind req body to bson map
+	if err := c.Bind(&user); err != nil {
+		return c.JSON(http.StatusBadRequest, models.ResponseError{Error: err.Error()})
+	}
+
+	// make sure bson map has email
+	if _, ok := user["email"]; !ok {
+		return c.JSON(http.StatusBadRequest, models.ResponseError{Error: "missing email field"})
+	}
+
+	// make sure bson map has password
+	if _, ok := user["password"]; !ok {
+		return c.JSON(http.StatusBadRequest, models.ResponseError{Error: "missing password field"})
+	}
+
+	// login user
+	if err := h.Usecase.Login(bson.M{"email": user["email"]}, user["password"]); err != nil {
+		return c.JSON(http.StatusBadRequest, models.ResponseError{Error: err.Error()})
+	}
+
+	// return result
+	result := models.ResponseMsg{Message: fmt.Sprintf("User %s logged in successfully", user["email"])}
 	return c.JSON(http.StatusOK, result)
 
 }
