@@ -8,6 +8,7 @@ import (
 
 	"github.com/globalsign/mgo/bson"
 	"github.com/labstack/echo"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type handler struct {
@@ -22,6 +23,7 @@ func InitUsers(e *echo.Echo, u *usecases.Usecase) {
 
 	routes := e.Group("/api/v1/users")
 	{
+		routes.GET("", handler.getAllUsers)
 		routes.GET("", handler.getAllUsers)
 		routes.GET("/:id", handler.getUserByID)
 		routes.POST("", handler.createUser)
@@ -68,19 +70,23 @@ func (h *handler) getAllUsers(c echo.Context) error {
 func (h *handler) createUser(c echo.Context) error {
 	id := bson.NewObjectId()
 	curTime := time.Now()
-	data := models.User{
+	user := models.User{
 		ID:        id,
 		UpdatedAt: curTime,
 		CreatedAt: curTime,
 	}
 
 	// bind request body to user struct
-	if err := c.Bind(&data); err != nil {
+	if err := c.Bind(&user); err != nil {
 		return c.JSON(http.StatusBadRequest, models.ResponseError{Error: err.Error()})
 	}
 
+	// hash password
+	hash, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	user.Password = string(hash)
+
 	// create new user in db
-	result, err := h.Usecase.Create(id.Hex(), data)
+	result, err := h.Usecase.Create(id.Hex(), user)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, models.ResponseError{Error: err.Error()})
 	}
