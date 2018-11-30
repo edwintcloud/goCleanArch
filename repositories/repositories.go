@@ -10,7 +10,7 @@ import (
 type Repository interface {
 	FindByID(id interface{}) (interface{}, error)
 	// FindAll() ([]*interface{}, error)
-	Create(id interface{}, data interface{}) (interface{}, error)
+	Insert(data interface{}) error
 	// UpdateByID(id interface{}, updates map[string]interface{}) (*interface{}, error)
 	// DeleteByID(id interface{}) error
 }
@@ -46,21 +46,15 @@ func (r *mongoRepository) FindByID(id interface{}) (interface{}, error) {
 
 // }
 
-func (r *mongoRepository) Create(id interface{}, data interface{}) (interface{}, error) {
-	var result interface{}
+func (r *mongoRepository) Insert(data interface{}) error {
 
 	// create new document
 	if err := r.c.Insert(data); err != nil {
-		return nil, err
+		return err
 	}
 
-	// find new document by id
-	if err := r.c.FindId(id.(bson.ObjectId)).One(&result); err != nil {
-		return nil, err
-	}
-
-	// return new document
-	return result, nil
+	// return all good
+	return nil
 
 }
 

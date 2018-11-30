@@ -69,7 +69,7 @@ func (h *handler) createUser(c echo.Context) error {
 	}
 
 	// create new user in db
-	usecaseResult, err := h.Usecase.Create(id, data)
+	usecaseResult, err := h.Usecase.Create(id.Hex(), data)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, models.ResponseError{Error: err.Error()})
 	}

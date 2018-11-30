@@ -17,11 +17,19 @@ func NewUsecase(r repositories.Repository) *Usecase {
 }
 
 // FindByID finds a resource by id
-func (u *Usecase) FindByID(id interface{}) (interface{}, error) {
+func (u *Usecase) FindByID(id string) (interface{}, error) {
 	return u.repo.FindByID(id)
 }
 
-// Create creates a new resource with specified data
+// Create creates a new resource with specified data and returns new resource
 func (u *Usecase) Create(id interface{}, data interface{}) (interface{}, error) {
-	return u.repo.Create(id, data)
+
+	// Insert resource into repo
+	if err := u.repo.Insert(data); err != nil {
+		return nil, err
+	}
+
+	// find resource by id and return
+	return u.repo.FindByID(id)
+
 }
