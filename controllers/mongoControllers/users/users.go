@@ -1,6 +1,7 @@
-package controllers
+package users
 
 import (
+	"fmt"
 	"goCleanArch/models"
 	"goCleanArch/usecases"
 	"net/http"
@@ -15,8 +16,8 @@ type handler struct {
 	Usecase *usecases.Usecase
 }
 
-// InitUsers initializes user controller and routes
-func InitUsers(e *echo.Echo, u *usecases.Usecase) {
+// Init initializes user controller and routes
+func Init(e *echo.Echo, u *usecases.Usecase) {
 	handler := &handler{
 		Usecase: u,
 	}
@@ -27,6 +28,7 @@ func InitUsers(e *echo.Echo, u *usecases.Usecase) {
 		routes.GET("", handler.getAllUsers)
 		routes.GET("/:id", handler.getUserByID)
 		routes.POST("", handler.createUser)
+		routes.DELETE("/:id", handler.deleteUserByID)
 	}
 }
 
@@ -92,6 +94,31 @@ func (h *handler) createUser(c echo.Context) error {
 	}
 
 	// return result
+	return c.JSON(http.StatusOK, result)
+
+}
+
+func (h *handler) deleteUserByID(c echo.Context) error {
+	id := c.Param("id")
+
+	// make sure id is not empty
+	if len(id) == 0 {
+		return c.JSON(http.StatusBadRequest, models.ResponseError{Error: "No Id param specified"})
+	}
+
+	// make sure id is valid object id
+	if !bson.IsObjectIdHex(id) {
+		return c.JSON(http.StatusBadRequest, models.ResponseError{Error: "invalid objectid"})
+	}
+
+	// delete by id
+	err := h.Usecase.DeleteByID(id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, models.ResponseError{Error: err.Error()})
+	}
+
+	// return result
+	result := models.ResponseMsg{Message: fmt.Sprintf("User %s deleted successfully", id)}
 	return c.JSON(http.StatusOK, result)
 
 }

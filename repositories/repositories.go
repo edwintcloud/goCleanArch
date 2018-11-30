@@ -12,7 +12,7 @@ type Repository interface {
 	FindAll() ([]interface{}, error)
 	Insert(data interface{}) error
 	// UpdateByID(id interface{}, updates map[string]interface{}) (*interface{}, error)
-	// DeleteByID(id interface{}) error
+	DeleteByID(id interface{}) error
 }
 
 // mongoRepository struct representing database connection for internal use
@@ -70,6 +70,13 @@ func (r *mongoRepository) Insert(data interface{}) error {
 
 // }
 
-// func (r *mongoRepository) DeleteByID(id interface{}) error {
+func (r *mongoRepository) DeleteByID(id interface{}) error {
 
-// }
+	// delete by id or return err
+	if err := r.c.RemoveId(bson.ObjectIdHex(id.(string))); err != nil {
+		return err
+	}
+
+	// otherwise return no error
+	return nil
+}

@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	mongo_controllers "goCleanArch/controllers/mongoControllers"
+	mongoUserController "goCleanArch/controllers/mongoControllers/users"
 	"goCleanArch/models"
 	"goCleanArch/repositories"
 	"goCleanArch/usecases"
@@ -62,7 +62,7 @@ func initializeMongo(e *echo.Echo) *mgo.Session {
 	userUsecase := usecases.NewUsecase(userRepository)
 
 	// pass echo and usecase to controller, registering routes
-	mongo_controllers.InitUsers(e, userUsecase)
+	mongoUserController.Init(e, userUsecase)
 
 	// return the session to main so we can defer session close
 	return session

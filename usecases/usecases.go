@@ -38,3 +38,8 @@ func (u *Usecase) Create(id interface{}, data interface{}) (interface{}, error) 
 	return u.repo.FindByID(id)
 
 }
+
+// DeleteByID deletes a resource by id
+func (u *Usecase) DeleteByID(id interface{}) error {
+	return u.repo.DeleteByID(id)
+}
