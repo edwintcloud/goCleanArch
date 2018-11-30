@@ -29,7 +29,7 @@ func InitUsers(e *echo.Echo, u *usecases.Usecase) {
 }
 
 func (h *handler) getUserByID(c echo.Context) error {
-	id, result := c.Param("id"), models.User{}
+	id := c.Param("id")
 
 	// make sure id is not empty
 	if len(id) == 0 {
@@ -42,14 +42,12 @@ func (h *handler) getUserByID(c echo.Context) error {
 	}
 
 	// find by id
-	usecaseResult, err := h.Usecase.FindByID(id)
+	result, err := h.Usecase.FindByID(id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, models.ResponseError{Error: err.Error()})
 	}
 
-	// convert usecaseResult to user struct and return result
-	bsonBytes, _ := bson.Marshal(usecaseResult)
-	bson.Unmarshal(bsonBytes, &result)
+	// return result
 	return c.JSON(http.StatusOK, result)
 
 }
@@ -62,7 +60,7 @@ func (h *handler) getAllUsers(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, models.ResponseError{Error: err.Error()})
 	}
 
-	// return result
+	// return results
 	return c.JSON(http.StatusOK, result)
 
 }
@@ -75,7 +73,6 @@ func (h *handler) createUser(c echo.Context) error {
 		UpdatedAt: curTime,
 		CreatedAt: curTime,
 	}
-	result := models.User{}
 
 	// bind request body to user struct
 	if err := c.Bind(&data); err != nil {
@@ -83,14 +80,12 @@ func (h *handler) createUser(c echo.Context) error {
 	}
 
 	// create new user in db
-	usecaseResult, err := h.Usecase.Create(id.Hex(), data)
+	result, err := h.Usecase.Create(id.Hex(), data)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, models.ResponseError{Error: err.Error()})
 	}
 
-	// convert usecaseResult to user struct and return result
-	bsonBytes, _ := bson.Marshal(usecaseResult)
-	bson.Unmarshal(bsonBytes, &result)
+	// return result
 	return c.JSON(http.StatusOK, result)
 
 }
